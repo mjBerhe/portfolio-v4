@@ -20,7 +20,7 @@ function App() {
             <div className="flex">
               <img src="../images/me_1.png" className="w-40 h-auto " />
               <div>
-                <p>hows it going</p>
+                <p>hello testing changes</p>
               </div>
 
             </div>
