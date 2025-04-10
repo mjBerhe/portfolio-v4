@@ -17,7 +17,13 @@ function App() {
             className={cn("border border-gray-700 bg-gradient-to-br from-gray-900 to-black ",
               "rounded-xl relative z-100 p-4 w-full h-[200px] shadow-2xl")}
           >
-            Hello, I'm Matt
+            <div className="flex">
+              <img src="../images/me_1.png" className="w-40 h-auto " />
+              <div>
+                <p>hows it going</p>
+              </div>
+
+            </div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 100 }}
