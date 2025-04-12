@@ -20,26 +20,30 @@ export const Welcome: React.FC = () => {
   };
 
   return (
-    <div className="flex w-full justify-between border h-full" ref={hoverRef}>
-      <div>
-        <p></p>
+    <div className="flex w-full justify-between h-full" ref={hoverRef}>
+      <div className="w-full p-4">
+        <p>hello</p>
       </div>
-      <motion.div initial="initial" whileHover="hover" className="relative h-full w-full">
+      <motion.div
+        initial="initial"
+        animate={isHover ? "hover" : "initial"}
+        className="relative h-full w-full"
+      >
         <motion.img
           src="../images/me_hidden.png"
           variants={imageVariants}
           custom={true}
-          className="absolute top-0 left-0 h-full border object-cover"
+          className="absolute bottom-[-20px] right-[12px]
+           h-[200px] object-cover"
         />
 
         <motion.img
           src="../images/me_wave.png"
           variants={imageVariants}
           custom={false}
-          className="absolute top-0 left-0 h-full border"
+          className="absolute top-0 right-0 h-full"
         />
       </motion.div>
-      {/* <img src="../images/me_wave.png" className="w-auto h-52" /> */}
     </div>
   );
 };
