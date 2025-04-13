@@ -6,8 +6,6 @@ export const Welcome: React.FC = () => {
   const hoverRef = useRef<HTMLDivElement>(null);
   const isHover = useHover(hoverRef as React.RefObject<HTMLDivElement>); // it must be a glitch??
 
-  console.log(isHover);
-
   const imageVariants = {
     initial: (defaultImg: boolean) => ({
       opacity: defaultImg ? 1 : 0,
@@ -21,13 +19,17 @@ export const Welcome: React.FC = () => {
 
   return (
     <div className="flex w-full justify-between h-full" ref={hoverRef}>
-      <div className="w-full p-4">
-        <p>hello</p>
+      <div className="w-full p-4 flex flex-col gap-y-2">
+        <p className="text-lg italic text-gray-300">welcome.</p>
+        <p>
+          I'm Matt, this is going to be some random text about myself. Maybe two
+          sentences? One about what I want to create. And another about myself?
+        </p>
       </div>
       <motion.div
         initial="initial"
         animate={isHover ? "hover" : "initial"}
-        className="relative h-full w-full"
+        className="relative h-full max-w-[240px] w-full"
       >
         <motion.img
           src="../images/me_hidden.png"
@@ -38,7 +40,7 @@ export const Welcome: React.FC = () => {
         />
 
         <motion.img
-          src="../images/me_wave.png"
+          src="../images/me_wave_2.png"
           variants={imageVariants}
           custom={false}
           className="absolute top-0 right-0 h-full"
