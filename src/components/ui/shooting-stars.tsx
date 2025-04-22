@@ -76,6 +76,7 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
 
     createStar();
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return () => {};
   }, [minSpeed, maxSpeed, minDelay, maxDelay]);
 
