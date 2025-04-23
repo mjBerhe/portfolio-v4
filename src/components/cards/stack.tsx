@@ -8,7 +8,7 @@ export const Stack: React.FC = () => {
   const hoverRef = useRef<HTMLDivElement>(null);
   const isHover = useHover(hoverRef as React.RefObject<HTMLDivElement>); // it must be a glitch??
 
-  console.log(isHover);
+  // console.log(isHover);
 
   return (
     <div className="flex h-full w-full justify-between" ref={hoverRef}>

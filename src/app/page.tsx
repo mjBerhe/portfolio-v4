@@ -7,12 +7,12 @@ import { ShootingStars } from "~/components/ui/shooting-stars";
 import { StarsBackground } from "~/components/ui/stars-background";
 import { Welcome } from "~/components/cards/welcome";
 import { Stack } from "~/components/cards/stack";
+import { Spotify } from "~/components/cards/spotify";
+
+const cardClass =
+  "border border-gray-800 bg-gradient-to-br from-gray-900 to-black rounded-xl relative z-100 shadow-2xl h-full";
 
 function App() {
-  const cardClass =
-    "border border-gray-800 bg-gradient-to-br from-gray-900 to-black rounded-xl relative z-100 shadow-2xl h-full";
-
-  //    const test = [3, 2, 1]
   return (
     <main className="h-screen w-screen bg-gray-950 text-white">
       <div className="container mx-auto h-full max-w-[1024px] px-8">
@@ -39,7 +39,7 @@ function App() {
             transition={{ delay: 1.0, duration: 0.6, ease: "easeOut" }}
             className={cn(cardClass, "col-span-5 row-span-1")}
           >
-            Card 3
+            <Spotify />
           </motion.div>
           <div className={cn(cardClass, "col-span-2 row-span-2")}></div>
         </div>
