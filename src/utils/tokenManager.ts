@@ -1,3 +1,9 @@
+type SpotifyAccessToken = {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+};
+
 let accessToken: string | null = null;
 let expiresAt: number | null = null;
 
@@ -29,11 +35,7 @@ export async function getSpotifyAccessToken(): Promise<string> {
     throw new Error("Failed to get Spotify access token");
   }
 
-  const data = (await res.json()) as {
-    access_token: string;
-    token_type: string;
-    expires_in: number; // in seconds
-  };
+  const data = (await res.json()) as SpotifyAccessToken;
 
   accessToken = data.access_token;
   expiresAt = now + data.expires_in * 1000 - 10_000; // Subtract 10s buffer

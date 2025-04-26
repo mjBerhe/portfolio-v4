@@ -13,7 +13,7 @@ export async function GET(req: Request) {
 
     if (!res.ok) return new Response("Failed to fetch track", { status: 500 });
 
-    const track = await res.json();
+    const track = (await res.json()) as SpotifyApi.TrackObjectFull;
     return Response.json(track);
   } catch {
     return new Response("Server error", { status: 500 });
