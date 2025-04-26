@@ -2,10 +2,9 @@
 
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
+import type { SpotifyTrack } from "../cards/spotify";
 
-export const AudioPlayer: React.FC<{ track: SpotifyApi.TrackObjectFull }> = ({
-  track,
-}) => {
+export const AudioPlayer: React.FC<{ track: SpotifyTrack }> = ({ track }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -26,48 +25,43 @@ export const AudioPlayer: React.FC<{ track: SpotifyApi.TrackObjectFull }> = ({
     const handleEnded = () => setIsPlaying(false);
     audio.addEventListener("ended", handleEnded);
 
+    audio.addEventListener("timeupdate", () => {
+      if (audio.duration && audio.currentTime > audio.duration - 5) {
+        // Last 5 seconds - start fading
+        const fadeOutDuration = 5; // seconds
+        const timeLeft = audio.duration - audio.currentTime;
+        audio.volume = Math.max(0, timeLeft / fadeOutDuration);
+      }
+    });
+
     return () => {
       audio.removeEventListener("ended", handleEnded);
+      // audio.removeEventListener("timeout", )
     };
   }, []);
 
-  console.log(track);
-
-  if (!track.external_urls.spotify) {
-    return <div>Not found</div>;
-  }
-
   return (
-    <div className="rounded-xl p-4 text-white shadow-lg">
-      {track.album.images[0]?.url ? (
-        <img
-          src={track.album.images[0].url}
-          alt="Album art"
-          className="mb-4 h-32 w-32 rounded"
-          // width={32}
-          // height={32}
-        />
-      ) : (
-        "No Album Image"
-      )}
+    <div className="flex h-full items-center gap-x-2 p-4">
+      <img
+        src={track.image_url}
+        alt="Album art"
+        className="mb-4 h-24 w-24 rounded-lg"
+        // width={32}
+        // height={32}
+      />
 
-      <h2 className="text-lg font-semibold">{track.name}</h2>
-      <p className="mb-4 text-sm text-zinc-400">
-        {track.artists[0]?.name ?? "N/A"}
-      </p>
+      <div className="flex flex-col">
+        <h2 className="text-lg font-semibold">{track.name}</h2>
+        <p className="mb-4 text-sm text-zinc-400">{track.artist}</p>
+      </div>
+
       <button
         onClick={togglePlay}
         className="rounded bg-green-500 px-4 py-2 transition hover:bg-green-600"
       >
-        {isPlaying ? "Pause" : "Play Preview"}
+        {isPlaying ? "Pause" : "Play"}
       </button>
-      <audio
-        ref={audioRef}
-        src={
-          "https://p.scdn.co/mp3-preview/7339548839a263fd721d01eb3364a848cad16fa7"
-        }
-        preload="auto"
-      />
+      <audio ref={audioRef} src={track.preview_url} preload="auto" />
     </div>
   );
 };
