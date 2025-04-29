@@ -42,12 +42,12 @@ export const AudioPlayer: React.FC<{ track: SpotifyTrack }> = ({ track }) => {
 
   return (
     <div className="flex h-full items-center gap-x-2 p-4">
-      <img
+      <Image
+        alt="album cover"
         src={track.image_url}
-        alt="Album art"
-        className="mb-4 h-24 w-24 rounded-lg"
-        // width={32}
-        // height={32}
+        width={96}
+        height={96}
+        className="rounded-lg"
       />
 
       <div className="flex flex-col">

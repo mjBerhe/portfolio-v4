@@ -7,7 +7,6 @@
 
 # testing
 /coverage
-findPreview.js
 
 # database
 /prisma/db.sqlite
@@ -45,3 +44,4 @@ yarn-error.log*
 
 # idea files
 .idea
+/findPreviews.js

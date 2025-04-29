@@ -11,7 +11,7 @@ export type SpotifyTrack = {
   image_url: string;
 };
 
-const songs: SpotifyTrack[] = [
+const tracks: SpotifyTrack[] = [
   {
     id: "2uvE4L5ZsYKpv8hbK4TIOt",
     name: "MUTT",
@@ -30,24 +30,36 @@ const songs: SpotifyTrack[] = [
     image_url:
       "https://i.scdn.co/image/ab67616d0000b273f705b14ca8b81af140d1f1d3",
   },
+  {
+    id: "5qII2n90lVdPDcgXEEVHNy",
+    name: "Sunday Morning",
+    artist: "Maroon 5",
+    preview_url:
+      "https://p.scdn.co/mp3-preview/41f14a5612da8fdf53a11d03fb2e705ef3ba2084",
+    image_url:
+      "https://i.scdn.co/image/ab67616d0000b27392f2d790c6a97b195f66d51e",
+  },
 ];
 
 export const Spotify: React.FC = () => {
-  const [track, setTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<SpotifyTrack>(tracks[0]!);
+  // const [track, setTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
 
-  useEffect(() => {
-    const fetchTrack = async () => {
-      const res = await fetch("/api/spotify/track?id=0fK60qLRIpyT05TXzoSBY0");
-      const data = (await res.json()) as SpotifyApi.TrackObjectFull;
+  // useEffect(() => {
+  //   const fetchTrack = async () => {
+  //     const res = await fetch("/api/spotify/track?id=5qII2n90lVdPDcgXEEVHNy");
+  //     const data = (await res.json()) as SpotifyApi.TrackObjectFull;
 
-      // const url = data.external_urls.spotify;
-      console.log(data);
-      setTrack(data);
-    };
-    void fetchTrack();
-  }, []);
+  //     // const url = data.external_urls.spotify;
+  //     console.log(data);
+  //     setTrack(data);
+  //   };
+  //   void fetchTrack();
+  // }, []);
 
   return (
-    <div className="h-full">{track && <AudioPlayer track={songs[1]} />}</div>
+    <div className="h-full">
+      <AudioPlayer track={currentTrack} />
+    </div>
   );
 };
