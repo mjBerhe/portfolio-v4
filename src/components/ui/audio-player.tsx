@@ -1,25 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import type { SpotifyTrack } from "../cards/spotify";
-import { useAudioVisualizer } from "~/hooks/useAudioVisualizer";
 
 export const AudioPlayer: React.FC<{
   track: SpotifyTrack;
-  onVolumeChange: (v: number) => void;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   onPlay: () => void;
   onEnd: () => void;
   onPause: () => void;
-}> = ({ track, onVolumeChange, onPlay, onEnd, onPause }) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+}> = ({ track, audioRef, onPlay, onEnd, onPause }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-
-  const { volume, waveform } = useAudioVisualizer(audioRef.current);
-
-  useEffect(() => {
-    onVolumeChange(volume);
-  }, [volume]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -79,33 +71,7 @@ export const AudioPlayer: React.FC<{
         {isPlaying ? "Pause" : "Play"}
       </button>
 
-      <WaveformVisualizer waveform={waveform} />
       <audio ref={audioRef} src={track.preview_url} preload="auto" />
-    </div>
-  );
-};
-
-const WaveformVisualizer = ({ waveform }: { waveform: Uint8Array | null }) => {
-  if (!waveform) return null;
-
-  const waveformArray = Array.from(waveform);
-
-  return (
-    <div className="flex h-16 items-end gap-[1px] overflow-hidden">
-      {waveformArray.map((v, i) => {
-        const height = ((v - 128) / 128) * 100; // from -100 to +100
-        return (
-          <div
-            key={i}
-            style={{
-              width: 2,
-              height: `${Math.abs(height)}%`,
-              backgroundColor: "cyan",
-              opacity: 0.8,
-            }}
-          ></div>
-        );
-      })}
     </div>
   );
 };

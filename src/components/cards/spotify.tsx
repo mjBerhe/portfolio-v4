@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "motion/react";
 import { AudioPlayer } from "../ui/audio-player";
+import { cn } from "~/lib/utils";
+import { useAudioVisualizer } from "~/hooks/useAudioVisualizer";
 
 export type SpotifyTrack = {
   id: string;
@@ -43,13 +45,11 @@ const tracks: SpotifyTrack[] = [
 ];
 
 export const Spotify: React.FC = () => {
-  // we can use ! because we know we have tracks
   const [currentTrack, setCurrentTrack] = useState<number>(0);
-  // const [track, setTrack] = useState<SpotifyApi.TrackObjectFull | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState<number>(0);
 
-  // console.log("is playing:", isPlaying);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { waveform } = useAudioVisualizer(audioRef.current);
 
   const handleNextTrack = () => {
     setIsPlaying(false);
@@ -62,30 +62,48 @@ export const Spotify: React.FC = () => {
     }
   };
 
-  const glowEffect = {
-    boxShadow: `0 0 ${volume * 50}px rgba(255, 0, 255, 0.7)`, // Increase the intensity of the glow based on volume
-    transform: `scale(${1 + volume * 0.05})`, // Optionally make the card "breathe" or "pulse"
-  };
-
-  console.log(volume);
+  if (!audioRef) return null;
 
   return (
     <motion.div
-      // animate={
-      //   isPlaying
-      //     ? { boxShadow: `0 0 ${volume * 500}px rgba(255, 0, 255, 0.7)` }
-      //     : {}
-      // }
       transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}
       className="h-full rounded-lg"
     >
       <AudioPlayer
         track={tracks[currentTrack]!}
-        onVolumeChange={(v) => setVolume(v)}
+        audioRef={audioRef}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnd={() => handleNextTrack()}
       />
+
+      <div className="absolute top-0 left-0 z-[-99] h-full w-full overflow-hidden rounded-lg">
+        <WaveformVisualizer waveform={waveform} />
+      </div>
     </motion.div>
+  );
+};
+
+const WaveformVisualizer = ({ waveform }: { waveform: Uint8Array | null }) => {
+  if (!waveform) return null;
+
+  const waveformArray = Array.from(waveform);
+
+  return (
+    <div className="flex h-full items-end gap-[1px] overflow-hidden">
+      {waveformArray.map((v, i) => {
+        // const height = v;
+        const height = ((v - 128) / 128) * 100; // from -100 to +100
+        return (
+          <motion.div
+            key={i}
+            className={cn(`flex-1 bg-cyan-500 opacity-60`)}
+            // style={{ height: `${Math.abs(height)}%` }}
+            animate={{ height: `${Math.abs(height)}%` }}
+            transition={{ duration: 0.1, ease: "easeOut" }}
+          ></motion.div>
+        );
+      })}
+    </div>
   );
 };
