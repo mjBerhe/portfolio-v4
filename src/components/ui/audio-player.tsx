@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import type { SpotifyTrack } from "../cards/spotify";
+import { Play, Pause, SkipBack, SkipForward, SkipBackIcon } from "lucide-react";
 
 export const AudioPlayer: React.FC<{
   track: SpotifyTrack;
@@ -10,23 +11,37 @@ export const AudioPlayer: React.FC<{
   onPlay: () => void;
   onEnd: () => void;
   onPause: () => void;
-}> = ({ track, audioRef, onPlay, onEnd, onPause }) => {
+  onNext: () => void;
+}> = ({ track, audioRef, onPlay, onEnd, onPause, onNext }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      void audioRef.current.play();
+    try {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (isPlaying) {
+        audio.pause();
+      } else {
+        void audio.play();
+      }
+      setIsPlaying(!isPlaying);
+      onPlay(); // callback so spotify player knows we are playing
+    } catch (error) {
+      console.error(error);
     }
-    setIsPlaying(!isPlaying);
-    onPlay(); // callback so spotify player knows we are playing
+  };
+
+  const handleNext = () => {
+    onNext();
   };
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
+    console.log("loading new track");
+    audio.load();
+    audio.volume = 1; // reset volume back to 1 after new track
 
     // on end, move to next song but don't autoplay??
     const handleEnded = () => {
@@ -47,29 +62,43 @@ export const AudioPlayer: React.FC<{
     return () => {
       audio.removeEventListener("ended", handleEnded);
     };
-  }, [onEnd]);
+  }, [track]);
 
   return (
-    <div className="flex h-full items-center gap-x-2 p-4">
-      <Image
-        alt="album cover"
-        src={track.image_url}
-        width={96}
-        height={96}
-        className="rounded-lg"
-      />
+    <div className="flex h-full items-center justify-between">
+      <div className="flex items-center gap-x-3">
+        <Image
+          alt="album cover"
+          src={track.image_url}
+          width={96}
+          height={96}
+          className="rounded-lg"
+        />
 
-      <div className="flex flex-col">
-        <h2 className="text-lg font-semibold">{track.name}</h2>
-        <p className="mb-4 text-sm text-zinc-400">{track.artist}</p>
+        <div className="flex flex-col">
+          <h2 className="text-lg font-semibold">{track.name}</h2>
+          <p className="mb-4 text-sm text-zinc-400">{track.artist}</p>
+        </div>
       </div>
 
-      <button
-        onClick={togglePlay}
-        className="rounded bg-green-500 px-4 py-2 transition hover:bg-green-600"
-      >
-        {isPlaying ? "Pause" : "Play"}
-      </button>
+      <div className="flex gap-x-3">
+        <button onClick={handleNext} className="cursor-pointer transition">
+          <SkipBackIcon className="h-6 w-6 fill-gray-300 stroke-gray-300" />
+        </button>
+        <button
+          onClick={togglePlay}
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-2 border-white transition"
+        >
+          {isPlaying ? (
+            <Pause className="h-5 w-5 fill-white" />
+          ) : (
+            <Play className="h-5 w-5 fill-white" />
+          )}
+        </button>
+        <button onClick={handleNext} className="cursor-pointer transition">
+          <SkipForward className="h-6 w-6 fill-gray-300 stroke-gray-300" />
+        </button>
+      </div>
 
       <audio ref={audioRef} src={track.preview_url} preload="auto" />
     </div>

@@ -28,8 +28,8 @@ const tracks: SpotifyTrack[] = [
     id: "0fK60qLRIpyT05TXzoSBY0",
     name: "Hereditary",
     artist: "JID",
-    preview_url:
-      "https://p.scdn.co/mp3-preview/7c385d6ddd2777d4aee453c282a4038995239ce0",
+    preview_url: "/audio/hereditary.mp3",
+    // "https://p.scdn.co/mp3-preview/7c385d6ddd2777d4aee453c282a4038995239ce0",
     image_url:
       "https://i.scdn.co/image/ab67616d0000b273f705b14ca8b81af140d1f1d3",
   },
@@ -37,8 +37,8 @@ const tracks: SpotifyTrack[] = [
     id: "5qII2n90lVdPDcgXEEVHNy",
     name: "Sunday Morning",
     artist: "Maroon 5",
-    preview_url:
-      "https://p.scdn.co/mp3-preview/41f14a5612da8fdf53a11d03fb2e705ef3ba2084",
+    preview_url: "/audio/sunday-morning.mp3",
+    // "https://p.scdn.co/mp3-preview/41f14a5612da8fdf53a11d03fb2e705ef3ba2084",
     image_url:
       "https://i.scdn.co/image/ab67616d0000b27392f2d790c6a97b195f66d51e",
   },
@@ -67,7 +67,7 @@ export const Spotify: React.FC = () => {
   return (
     <motion.div
       transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}
-      className="h-full rounded-lg"
+      className="h-full rounded-lg bg-gradient-to-r from-[rgba(0,0,0,0.7)] to-[rgba(155,64,44,0.7)] px-8 py-4"
     >
       <AudioPlayer
         track={tracks[currentTrack]!}
@@ -75,6 +75,10 @@ export const Spotify: React.FC = () => {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnd={() => handleNextTrack()}
+        onNext={() =>
+          currentTrack !== tracks.length - 1 &&
+          setCurrentTrack((prev) => prev + 1)
+        }
       />
 
       <div className="absolute top-0 left-0 z-[-99] h-full w-full overflow-hidden rounded-lg">
@@ -97,7 +101,8 @@ const WaveformVisualizer = ({ waveform }: { waveform: Uint8Array | null }) => {
         return (
           <motion.div
             key={i}
-            className={cn(`flex-1 bg-cyan-500 opacity-60`)}
+            // 155 64 44
+            className={cn(`flex-1 bg-[rgba(189,65,87)]`)}
             // style={{ height: `${Math.abs(height)}%` }}
             animate={{ height: `${Math.abs(height)}%` }}
             transition={{ duration: 0.1, ease: "easeOut" }}
