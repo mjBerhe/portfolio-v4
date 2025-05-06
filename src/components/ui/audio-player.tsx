@@ -64,6 +64,8 @@ export const AudioPlayer: React.FC<{
     };
   }, [track]);
 
+  // TODO: add some feedback to clicking buttons, like the size bounces for a sec
+
   return (
     <div className="flex h-full items-center justify-between">
       <div className="flex items-center gap-x-3">
@@ -83,7 +85,7 @@ export const AudioPlayer: React.FC<{
 
       <div className="flex gap-x-3">
         <button onClick={handleNext} className="cursor-pointer transition">
-          <SkipBackIcon className="h-6 w-6 fill-gray-300 stroke-gray-300" />
+          <SkipBackIcon className="h-6 w-6 fill-gray-200 stroke-gray-200" />
         </button>
         <button
           onClick={togglePlay}
@@ -96,7 +98,7 @@ export const AudioPlayer: React.FC<{
           )}
         </button>
         <button onClick={handleNext} className="cursor-pointer transition">
-          <SkipForward className="h-6 w-6 fill-gray-300 stroke-gray-300" />
+          <SkipForward className="h-6 w-6 fill-gray-200 stroke-gray-200" />
         </button>
       </div>
 

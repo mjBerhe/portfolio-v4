@@ -14,6 +14,17 @@ export type SpotifyTrack = {
   image_url: string;
 };
 
+<iframe
+  style="border-radius:12px"
+  src="https://open.spotify.com/embed/track/?utm_source=generator"
+  width="100%"
+  height="352"
+  frameBorder="0"
+  allowfullscreen=""
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy"
+></iframe>;
+
 const tracks: SpotifyTrack[] = [
   {
     id: "2uvE4L5ZsYKpv8hbK4TIOt",
@@ -41,6 +52,13 @@ const tracks: SpotifyTrack[] = [
     // "https://p.scdn.co/mp3-preview/41f14a5612da8fdf53a11d03fb2e705ef3ba2084",
     image_url:
       "https://i.scdn.co/image/ab67616d0000b27392f2d790c6a97b195f66d51e",
+  },
+  {
+    id: "5rwOE5J3Y1A2NiRa6y3Yph",
+    name: "Stainless",
+    artist: "Logic",
+    preview_url: "/audio/stainless.mp3",
+    image_url: "",
   },
 ];
 
