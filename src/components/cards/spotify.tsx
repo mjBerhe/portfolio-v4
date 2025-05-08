@@ -12,9 +12,8 @@ export type SpotifyTrack = {
   artist: string;
   preview_url: string;
   image_url: string;
-  colors?: {
+  colors: {
     main: string;
-    secondary: string;
     bg: string;
     bars: string;
   };
@@ -31,8 +30,7 @@ const tracks: SpotifyTrack[] = [
       "https://i.scdn.co/image/ab67616d0000b2737fc4fb3453f841652d2e4814",
     colors: {
       main: "rgba(155,64,44,0.7)",
-      secondary: "rgb(189,65,87)",
-      bg: "from-[rgba(0,0,0,0.7)] to-[rgba(155,64,44,0.7)]",
+      bg: "from-[rgba(0,0,0,0.6)] to-[rgba(155,64,44,0.7)]",
       bars: "bg-[rgba(189,65,87)]",
     },
   },
@@ -45,19 +43,10 @@ const tracks: SpotifyTrack[] = [
     image_url:
       "https://i.scdn.co/image/ab67616d0000b273f705b14ca8b81af140d1f1d3",
     colors: {
-      main: "",
+      main: "rgb(223,150,56)",
       bg: "from-[rgba(0,0,0,0.6)] to-[rgba(20,20,20,0.9)]",
       bars: "bg-[rgba(223,150,56)]",
     },
-  },
-  {
-    id: "5qII2n90lVdPDcgXEEVHNy",
-    name: "Sunday Morning",
-    artist: "Maroon 5",
-    preview_url: "/audio/sunday-morning.mp3",
-    // "https://p.scdn.co/mp3-preview/41f14a5612da8fdf53a11d03fb2e705ef3ba2084",
-    image_url:
-      "https://i.scdn.co/image/ab67616d0000b27392f2d790c6a97b195f66d51e",
   },
   {
     id: "5rwOE5J3Y1A2NiRa6y3Yph",
@@ -66,7 +55,34 @@ const tracks: SpotifyTrack[] = [
     preview_url: "/audio/stainless.mp3",
     image_url:
       "https://i.scdn.co/image/ab67616d0000b273f0f7649257d4b99460929ced",
+    colors: {
+      main: "rgb(31,48,78)",
+      bg: "from-[rgba(0,0,0,0.6)] to-[rgba(31,48,78,0.9)]",
+      bars: "bg-[rgb(132,184,233)]",
+    },
   },
+  {
+    id: "0815caqt2Lytro5EIzMufT",
+    name: "You and Me",
+    artist: "Lifehouse",
+    preview_url: "/audio/you-and-me.mp3",
+    image_url:
+      "https://i.scdn.co/image/ab67616d0000b273a35daeab41d7d6da14cc809c",
+    colors: {
+      main: "rgb(233,201,69)",
+      bg: "from-[rgba(0,0,0,0.6)] to-[rgba(233,201,69,0.9)]",
+      bars: "bg-[rgb(73,96,54)]",
+    },
+  },
+  // {
+  //   id: "5qII2n90lVdPDcgXEEVHNy",
+  //   name: "Sunday Morning",
+  //   artist: "Maroon 5",
+  //   preview_url: "/audio/sunday-morning.mp3",
+  //   // "https://p.scdn.co/mp3-preview/41f14a5612da8fdf53a11d03fb2e705ef3ba2084",
+  //   image_url:
+  //     "https://i.scdn.co/image/ab67616d0000b27392f2d790c6a97b195f66d51e",
+  // },
 ];
 
 export const Spotify: React.FC = () => {
@@ -84,22 +100,23 @@ export const Spotify: React.FC = () => {
     console.log("going next");
     if (trackNumber + 1 < tracks.length) {
       setTrackNumber((prev) => prev + 1);
+      // setIsPlaying(true);
     } else {
       console.log("on last track");
     }
   };
 
-  // useEffect(() => {
-  //   const fetchTrack = async () => {
-  //     const res = await fetch("/api/spotify/track?id=5rwOE5J3Y1A2NiRa6y3Yph");
-  //     const data = (await res.json()) as SpotifyApi.TrackObjectFull;
+  useEffect(() => {
+    const fetchTrack = async () => {
+      const res = await fetch("/api/spotify/track?id=0815caqt2Lytro5EIzMufT");
+      const data = (await res.json()) as SpotifyApi.TrackObjectFull;
 
-  //     const url = data.external_urls.spotify;
-  //     console.log(url);
-  //     console.log(data);
-  //   };
-  //   void fetchTrack();
-  // }, []);
+      const url = data.external_urls.spotify;
+      console.log(url);
+      console.log(data);
+    };
+    void fetchTrack();
+  }, []);
 
   if (!audioRef || !currentTrack) return null;
 
@@ -109,9 +126,9 @@ export const Spotify: React.FC = () => {
         isPlaying
           ? {
               boxShadow: [
-                "0 0 8px 1px currentColor", // base glow
-                "0 0 16px 4px currentColor", // brighter pulse
-                "0 0 8px 1px currentColor", // return to base
+                "0 0 5px 1px currentColor", // base glow
+                "0 0 10px 2px currentColor", // brighter pulse
+                "0 0 5px 1px currentColor", // return to base
               ],
             }
           : {

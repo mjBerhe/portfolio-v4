@@ -21,12 +21,13 @@ export const AudioPlayer: React.FC<{
       const audio = audioRef.current;
       if (!audio) return;
       if (isPlaying) {
+        onPause();
         audio.pause();
       } else {
         void audio.play();
+        onPlay(); // callback so spotify player knows we are playing
       }
       setIsPlaying(!isPlaying);
-      onPlay(); // callback so spotify player knows we are playing
     } catch (error) {
       console.error(error);
     }
