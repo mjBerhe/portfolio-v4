@@ -12,18 +12,13 @@ export type SpotifyTrack = {
   artist: string;
   preview_url: string;
   image_url: string;
+  colors?: {
+    main: string;
+    secondary: string;
+    bg: string;
+    bars: string;
+  };
 };
-
-<iframe
-  style="border-radius:12px"
-  src="https://open.spotify.com/embed/track/?utm_source=generator"
-  width="100%"
-  height="352"
-  frameBorder="0"
-  allowfullscreen=""
-  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-  loading="lazy"
-></iframe>;
 
 const tracks: SpotifyTrack[] = [
   {
@@ -34,6 +29,12 @@ const tracks: SpotifyTrack[] = [
     // "https://p.scdn.co/mp3-preview/fc9cb15deab670f91c621b2aa42e094ccacce63f",
     image_url:
       "https://i.scdn.co/image/ab67616d0000b2737fc4fb3453f841652d2e4814",
+    colors: {
+      main: "rgba(155,64,44,0.7)",
+      secondary: "rgb(189,65,87)",
+      bg: "from-[rgba(0,0,0,0.7)] to-[rgba(155,64,44,0.7)]",
+      bars: "bg-[rgba(189,65,87)]",
+    },
   },
   {
     id: "0fK60qLRIpyT05TXzoSBY0",
@@ -43,6 +44,11 @@ const tracks: SpotifyTrack[] = [
     // "https://p.scdn.co/mp3-preview/7c385d6ddd2777d4aee453c282a4038995239ce0",
     image_url:
       "https://i.scdn.co/image/ab67616d0000b273f705b14ca8b81af140d1f1d3",
+    colors: {
+      main: "",
+      bg: "from-[rgba(0,0,0,0.6)] to-[rgba(20,20,20,0.9)]",
+      bars: "bg-[rgba(223,150,56)]",
+    },
   },
   {
     id: "5qII2n90lVdPDcgXEEVHNy",
@@ -58,13 +64,16 @@ const tracks: SpotifyTrack[] = [
     name: "Stainless",
     artist: "Logic",
     preview_url: "/audio/stainless.mp3",
-    image_url: "",
+    image_url:
+      "https://i.scdn.co/image/ab67616d0000b273f0f7649257d4b99460929ced",
   },
 ];
 
 export const Spotify: React.FC = () => {
-  const [currentTrack, setCurrentTrack] = useState<number>(0);
+  const [trackNumber, setTrackNumber] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const currentTrack = tracks[trackNumber];
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { waveform } = useAudioVisualizer(audioRef.current);
@@ -73,40 +82,87 @@ export const Spotify: React.FC = () => {
     setIsPlaying(false);
 
     console.log("going next");
-    if (currentTrack + 1 <= tracks.length) {
-      setCurrentTrack((prev) => prev + 1);
+    if (trackNumber + 1 < tracks.length) {
+      setTrackNumber((prev) => prev + 1);
     } else {
       console.log("on last track");
     }
   };
 
-  if (!audioRef) return null;
+  // useEffect(() => {
+  //   const fetchTrack = async () => {
+  //     const res = await fetch("/api/spotify/track?id=5rwOE5J3Y1A2NiRa6y3Yph");
+  //     const data = (await res.json()) as SpotifyApi.TrackObjectFull;
+
+  //     const url = data.external_urls.spotify;
+  //     console.log(url);
+  //     console.log(data);
+  //   };
+  //   void fetchTrack();
+  // }, []);
+
+  if (!audioRef || !currentTrack) return null;
 
   return (
     <motion.div
-      transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}
-      className="h-full rounded-lg bg-gradient-to-r from-[rgba(0,0,0,0.7)] to-[rgba(155,64,44,0.7)] px-8 py-4"
+      animate={
+        isPlaying
+          ? {
+              boxShadow: [
+                "0 0 8px 1px currentColor", // base glow
+                "0 0 16px 4px currentColor", // brighter pulse
+                "0 0 8px 1px currentColor", // return to base
+              ],
+            }
+          : {
+              boxShadow: "0 0 8px 1px transparent", // optional: hide when paused
+            }
+      }
+      transition={{
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "reverse",
+        ease: "easeInOut",
+      }}
+      className={cn(
+        "h-full rounded-lg px-8 py-4",
+        "bg-gradient-to-r",
+        currentTrack?.colors?.bg,
+      )}
+      style={{
+        color: currentTrack?.colors?.main ?? "#ffffff",
+      }}
     >
       <AudioPlayer
-        track={tracks[currentTrack]!}
+        track={currentTrack}
         audioRef={audioRef}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnd={() => handleNextTrack()}
         onNext={() =>
-          currentTrack !== tracks.length - 1 &&
-          setCurrentTrack((prev) => prev + 1)
+          trackNumber !== tracks.length - 1 &&
+          setTrackNumber((prev) => prev + 1)
         }
+        onBack={() => trackNumber !== 0 && setTrackNumber((prev) => prev - 1)}
       />
 
       <div className="absolute top-0 left-0 z-[-99] h-full w-full overflow-hidden rounded-lg">
-        <WaveformVisualizer waveform={waveform} />
+        <WaveformVisualizer
+          waveform={waveform}
+          color={currentTrack.colors?.bars}
+        />
       </div>
     </motion.div>
   );
 };
 
-const WaveformVisualizer = ({ waveform }: { waveform: Uint8Array | null }) => {
+const WaveformVisualizer = ({
+  waveform,
+  color,
+}: {
+  waveform: Uint8Array | null;
+  color: string;
+}) => {
   if (!waveform) return null;
 
   const waveformArray = Array.from(waveform);
@@ -114,13 +170,11 @@ const WaveformVisualizer = ({ waveform }: { waveform: Uint8Array | null }) => {
   return (
     <div className="flex h-full items-end gap-[1px] overflow-hidden">
       {waveformArray.map((v, i) => {
-        // const height = v;
         const height = ((v - 128) / 128) * 100; // from -100 to +100
         return (
           <motion.div
             key={i}
-            // 155 64 44
-            className={cn(`flex-1 bg-[rgba(189,65,87)]`)}
+            className={cn("flex-1", color)}
             // style={{ height: `${Math.abs(height)}%` }}
             animate={{ height: `${Math.abs(height)}%` }}
             transition={{ duration: 0.1, ease: "easeOut" }}

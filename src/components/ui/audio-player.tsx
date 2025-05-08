@@ -12,7 +12,8 @@ export const AudioPlayer: React.FC<{
   onEnd: () => void;
   onPause: () => void;
   onNext: () => void;
-}> = ({ track, audioRef, onPlay, onEnd, onPause, onNext }) => {
+  onBack: () => void;
+}> = ({ track, audioRef, onPlay, onEnd, onPause, onNext, onBack }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const togglePlay = () => {
@@ -33,6 +34,10 @@ export const AudioPlayer: React.FC<{
 
   const handleNext = () => {
     onNext();
+  };
+
+  const handleBack = () => {
+    onBack();
   };
 
   useEffect(() => {
@@ -67,7 +72,7 @@ export const AudioPlayer: React.FC<{
   // TODO: add some feedback to clicking buttons, like the size bounces for a sec
 
   return (
-    <div className="flex h-full items-center justify-between">
+    <div className="flex h-full items-center justify-between text-white">
       <div className="flex items-center gap-x-3">
         <Image
           alt="album cover"
@@ -84,7 +89,7 @@ export const AudioPlayer: React.FC<{
       </div>
 
       <div className="flex gap-x-3">
-        <button onClick={handleNext} className="cursor-pointer transition">
+        <button onClick={handleBack} className="cursor-pointer transition">
           <SkipBackIcon className="h-6 w-6 fill-gray-200 stroke-gray-200" />
         </button>
         <button

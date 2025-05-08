@@ -37,7 +37,7 @@ function App() {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.0, duration: 0.6, ease: "easeOut" }}
-            className={cn(cardClass, "col-span-5 row-span-2")}
+            className={cn(cardClass, "col-span-5 row-span-2", "border-none")}
           >
             <Spotify />
           </motion.div>
